@@ -4,9 +4,7 @@ pipeline {
     stages {
 
         stage('Clean Workspace') {
-            steps {
-                cleanWs()
-            }
+            steps { cleanWs() }
         }
 
         stage('Checkout the Code') {
@@ -77,16 +75,10 @@ pipeline {
                 }
             }
         }
+
         stage('Approve MySQL Deployment') {
             steps {
-                script {
-                    try {
-                        input message: 'Approve deployment of MySQL to Kubernetes'
-                        echo 'MySQL deployment approved.'
-                    } catch (err) {
-                        error 'MySQL deployment aborted by user.'
-                    }
-                }
+                input message: 'Deploy MySQL to Kubernetes?', ok: 'Deploy'
             }
         }
 
@@ -101,16 +93,9 @@ pipeline {
             }
         }
 
-        stage('Approve Two-Tier App Deployment') {
+        stage('Approve App Deployment') {
             steps {
-                script {
-                    try {
-                        input message: 'Approve deployment of Two-Tier Application to Kubernetes'
-                        echo 'Two-Tier application deployment approved.'
-                    } catch (err) {
-                        error 'Two-Tier application deployment aborted by user.'
-                    }
-                }
+                input message: 'Deploy Two-Tier App?', ok: 'Deploy'
             }
         }
 
@@ -122,12 +107,6 @@ pipeline {
                 }
             }
         }
-        
-        //stage('Minikube Service Start') {
-            //steps {
-                //sh 'minikube service two-tier-svc'
-            //}
-        //}
     }
 
     post {
@@ -140,32 +119,7 @@ pipeline {
             emailext(
                 attachLog: true,
                 subject: "SUCCESS | ${env.JOB_NAME} #${env.BUILD_NUMBER}",
-                body: """
-                <p>Hello Team,</p>
-
-                <p>
-                    The Jenkins job <b>${env.JOB_NAME}</b> completed
-                    <b style="color:green;">SUCCESSFULLY</b>.
-                </p>
-
-                <table cellpadding="6">
-                    <tr>
-                        <td><b>Build Number:</b></td>
-                        <td>${env.BUILD_NUMBER}</td>
-                    </tr>
-                    <tr>
-                        <td><b>Build URL:</b></td>
-                        <td><a href="${env.BUILD_URL}">${env.BUILD_URL}</a></td>
-                    </tr>
-                </table>
-
-                <p>Security scan reports are attached.</p>
-
-                <p>
-                    Regards,<br/>
-                    <b>Mradul Singh : DevOps Engineer</b>
-                </p>
-                """,
+                body: "Build Successful — Reports attached.",
                 to: 'vibhishh@gmail.com',
                 attachmentsPattern: 'trivy-fs-report.txt,trivy-image-report.txt'
             )
@@ -175,32 +129,7 @@ pipeline {
             emailext(
                 attachLog: true,
                 subject: "FAILED | ${env.JOB_NAME} #${env.BUILD_NUMBER}",
-                body: """
-                <p>Hello Team,</p>
-
-                <p>
-                    The Jenkins job <b>${env.JOB_NAME}</b>
-                    <b style="color:red;">FAILED</b>.
-                </p>
-
-                <table cellpadding="6">
-                    <tr>
-                        <td><b>Build Number:</b></td>
-                        <td>${env.BUILD_NUMBER}</td>
-                    </tr>
-                    <tr>
-                        <td><b>Build URL:</b></td>
-                        <td><a href="${env.BUILD_URL}">${env.BUILD_URL}</a></td>
-                    </tr>
-                </table>
-
-                <p>Please review the logs.</p>
-
-                <p>
-                    Regards,<br/>
-                    <b>Mradul Singh : DevOps Engineer</b>
-                </p>
-                """,
+                body: "Build Failed — Check logs.",
                 to: 'vibhishh@gmail.com'
             )
         }
