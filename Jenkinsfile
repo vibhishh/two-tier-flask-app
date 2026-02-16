@@ -107,6 +107,13 @@ pipeline {
                 }
             }
         }
+        stage('Expose Service') {
+            steps {
+                script {
+                    sh 'minikube service two-tier-svc'
+                }
+            }
+        }
     }
 
     post {
