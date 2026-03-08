@@ -71,7 +71,11 @@ pipeline {
                         echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin
                         docker tag two-tier-app:latest $DOCKER_USER/two-tier-app:latest
                         docker push $DOCKER_USER/two-tier-app:latest
-                    '''
+                        
+                        # Remove local images after push
+                        docker rmi $DOCKER_USER/two-tier-app:latest
+                        docker rmi two-tier-app:latest
+                     '''
                 }
             }
         }
