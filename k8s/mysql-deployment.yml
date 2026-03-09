@@ -19,7 +19,7 @@ spec:
           image: mysql:8.0
           env:
             - name: MYSQL_ROOT_PASSWORD
-              value: "admin"
+              value: "root"
             - name: MYSQL_DATABASE
               value: "mydb"
             - name: MYSQL_USER
