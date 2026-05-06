@@ -128,20 +128,20 @@ pipeline {
 
         success {
             emailext(
-                attachLog: true,
-                subject: "SUCCESS | ${env.JOB_NAME} #${env.BUILD_NUMBER}",
-                body: "Build Successful — Reports attached.",
-                to: 'vibhishh@gmail.com',
-                attachmentsPattern: 'trivy-fs-report.txt,trivy-image-report.txt'
+                to: 'vibhishh@gmail.com',                 // Receiver email
+                subject: "SUCCESS | Job Build Passed",    // Email subject
+                body: "Build completed successfully. Reports are attached.",  // Email message
+                attachLog: true,                          // Attach Jenkins console logs
+                attachmentsPattern: 'trivy-fs-report.txt,trivy-image-report.txt' // Attach these files
             )
         }
 
         failure {
             emailext(
-                attachLog: true,
+                to: 'vibhishh@gmail.com',
                 subject: "FAILED | ${env.JOB_NAME} #${env.BUILD_NUMBER}",
                 body: "Build Failed — Check logs.",
-                to: 'vibhishh@gmail.com'
+                attachLog: true
             )
         }
     }
